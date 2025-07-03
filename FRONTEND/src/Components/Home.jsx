@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const Home = () => {
-  const [hoveredItem, setHoveredItem] = useState(null);
-
-  const trendingItems = [
-    { id: 1, name: 'Classic White Shirt', price: 59.99, image: '' },
-    { id: 2, name: 'Denim Jacket', price: 89.99, image: '' },
-    { id: 3, name: 'Silk Skirt', price: 49.99, image: '' },
-    { id: 4, name: 'Linen Trousers', price: 69.99, image: '' },
+  const categories = [
+    {
+      id: 1,
+      name: 'Pants',
+      image: 'https://via.placeholder.com/300x300?text=Pants',
+    },
+    {
+      id: 2,
+      name: 'Dress',
+      image: 'https://via.placeholder.com/300x300?text=Dress',
+    },
+    {
+      id: 3,
+      name: 'T-Shirts',
+      image: 'https://via.placeholder.com/300x300?text=T-Shirts',
+    },
+    {
+      id: 4,
+      name: 'Jackets',
+      image: 'https://via.placeholder.com/300x300?text=Jackets',
+    },
   ];
 
   return (
@@ -21,7 +35,6 @@ const Home = () => {
             backgroundImage: `url('https://readdy.ai/api/search-image?query=elegant%20minimalist%20fashion%20photoshoot%20with%20model%20wearing%20stylish%20modern%20clothing%20against%20neutral%20background%2C%20soft%20natural%20lighting%2C%20high-end%20fashion%20photography%2C%20professional%20composition%20with%20gradient%20white%20background%20on%20left%20side%20for%20text%20overlay%2C%20atmospheric&width=1440&height=800&seq=hero1&orientation=landscape')`,
           }}
         ></div>
-
         <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
           <div className="max-w-lg">
             <h1 className="text-5xl font-light text-gray-900 mb-4">Spring Collection 2025</h1>
@@ -35,53 +48,22 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Trending Items Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-light text-center mb-12">Trending Now</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {trendingItems.map((item) => (
-              <div
-                key={item.id}
-                className="group relative"
-                onMouseEnter={() => setHoveredItem(item.id)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                <div className="relative overflow-hidden bg-gray-100 aspect-[4/5] rounded-md shadow-sm">
+          <h2 className="text-3xl font-light text-center mb-8">Shop by Category</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.map((category) => (
+              <div key={category.id} className="text-center group">
+                <div className="overflow-hidden rounded-md shadow-md aspect-square bg-gray-100">
                   <img
-                    src={item.image}
-                    alt={item.name}
-                    onError={(e) => {
-                      e.target.src = '';
-                    }}
+                    src={category.image}
+                    alt={category.name}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-
-                  {/* Bottom overlay buttons */}
-                  {hoveredItem === item.id && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-white/90 p-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button className="w-full bg-black text-white py-2 text-sm font-medium hover:bg-gray-900 transition">
-                        Add to Cart
-                      </button>
-                    </div>
-                  )}
                 </div>
-
-                <div className="mt-4 text-center">
-                  <h3 className="text-gray-900 font-medium">{item.name}</h3>
-                  <div className="flex items-center justify-center mt-1">
-                    <span className="text-gray-900 font-medium">${item.price.toFixed(2)}</span>
-                  </div>
-                </div>
+                <h3 className="mt-3 text-lg font-medium text-gray-900">{category.name}</h3>
               </div>
             ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <button className="border border-black text-black px-8 py-3 font-medium hover:bg-black hover:text-white transition-colors">
-              View All Products
-            </button>
           </div>
         </div>
       </section>

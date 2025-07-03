@@ -11,6 +11,7 @@ class User(AbstractUser):
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='customer')
     phone = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(unique=True)
 
     def __str__(self):
         return self.username
@@ -37,11 +38,11 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-# 4. Product Variant (e.g., Color, Size)
+# 4. Product Variant 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
-    variant_name = models.CharField(max_length=100)  # e.g., Color, Size
-    variant_value = models.CharField(max_length=100)  # e.g., Red, Large
+    variant_name = models.CharField(max_length=100)  
+    variant_value = models.CharField(max_length=100) 
     stock_quantity = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='product_variants/', blank=True, null=True)
 
@@ -86,7 +87,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     variant = models.ForeignKey(ProductVariant, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Price at purchase time (from Product.price)
+    price = models.DecimalField(max_digits=10, decimal_places=2)  
 
     def __str__(self):
         product_name = self.product.name if self.product else 'Deleted Product'
