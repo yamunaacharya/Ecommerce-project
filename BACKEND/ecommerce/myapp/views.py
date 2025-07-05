@@ -1,4 +1,6 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics, permissions
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User, Category, Product, ProductVariant, Address, Order, OrderItem, CartItem, Payment
 from .serializers import (
@@ -11,7 +13,30 @@ from .serializers import (
     OrderItemSerializer,
     CartItemSerializer,
     PaymentSerializer,
+    RegisterSerializer,
 )
+
+# --- Custom JWT Token Serializer and View for Login with User Info ---
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['user'] = {
+            'id': self.user.id,
+            'username': self.user.username,
+            'role': self.user.role, 
+            'email': self.user.email,
+        }
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = RegisterSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
