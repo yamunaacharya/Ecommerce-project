@@ -9,7 +9,7 @@ export default function SignUp() {
     phone: '',
     role: 'customer',
     password: '',
-    password2: '', // Added password2 here
+    password2: '', 
   });
 
   const [message, setMessage] = useState('');
@@ -34,7 +34,7 @@ export default function SignUp() {
     console.log('Submitting form data:', formData);
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/register/', {
+      const response = await fetch('http://localhost:8000/api/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

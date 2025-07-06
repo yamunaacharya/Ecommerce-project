@@ -7,7 +7,9 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [user, setUser] = useState(null);
+
   const searchRef = useRef(null);
+  const userMenuRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,13 +40,16 @@ const Navbar = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       console.log("Searching for:", searchTerm);
-      // Add your search logic here
+      // You can add your search logic here, e.g., navigate to search results page
     }
   };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
+      if (
+        (searchRef.current && !searchRef.current.contains(e.target)) &&
+        (userMenuRef.current && !userMenuRef.current.contains(e.target))
+      ) {
         setShowSearch(false);
         setShowUserMenu(false);
       }
@@ -71,6 +76,7 @@ const Navbar = () => {
       <header className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
         <div className="container mx-auto px-4 flex items-center justify-between h-20 relative">
 
+          {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/home" className="text-gray-800 hover:text-black font-medium">Home</Link>
             <Link to="/category/jeans" className="text-gray-800 hover:text-black font-medium">Jeans</Link>
@@ -78,12 +84,15 @@ const Navbar = () => {
             <Link to="/category/t-shirts" className="text-gray-800 hover:text-black font-medium">T-shirts</Link>
           </nav>
 
+          {/* Brand Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <Link to="/" className="text-2xl font-bold text-black">Luxe Closet</Link>
           </div>
 
+          {/* Right Side Icons */}
           <div className="flex items-center space-x-6">
 
+            {/* Search Icon & Input */}
             <div className="flex items-center space-x-2 relative" ref={searchRef}>
               <FaSearch
                 className="text-gray-800 hover:text-black cursor-pointer"
@@ -103,6 +112,7 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* Shopping Bag Icon */}
             <div className="relative">
               <FaShoppingBag className="text-gray-800 hover:text-black cursor-pointer" />
               <span className="absolute -top-1 -right-1 bg-black text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
@@ -110,7 +120,8 @@ const Navbar = () => {
               </span>
             </div>
 
-            <div className="flex items-center relative" ref={searchRef}>
+            {/* User Icon & Dropdown */}
+            <div className="flex items-center relative" ref={userMenuRef}>
               {user && (
                 <span className="mr-2 text-gray-800 font-semibold hidden sm:inline">
                   Wlc, {user.username}
@@ -123,22 +134,35 @@ const Navbar = () => {
               />
 
               <div
-                className={`absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10 overflow-hidden transition-all duration-300 ease-in-out ${
+                className={`absolute right-0 top-full mt-1 w-40 bg-white border rounded-lg shadow-lg z-10 overflow-hidden transition-all duration-300 ease-in-out ${
                   showUserMenu
                     ? 'opacity-100 scale-y-100 translate-y-0'
-                    : 'opacity-0 scale-y-95 pointer-events-none -translate-y-2'
+                    : 'opacity-0 scale-y-95 pointer-events-none translate-y-0'
                 }`}
               >
                 <ul className="py-1 text-sm font-medium text-gray-700">
                   {user ? (
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
-                      >
-                        Logout
-                      </button>
-                    </li>
+                    <>
+                      <li>
+                        <button
+                          onClick={() => {
+                            navigate('/customerdashboard');
+                            setShowUserMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                        >
+                          Dashboard
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors"
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </>
                   ) : (
                     <>
                       <li>
