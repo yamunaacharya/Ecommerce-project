@@ -21,7 +21,6 @@ const CustomerDashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine the active menu based on the current path
   const activeMenu = menuItems.find(item =>
     location.pathname.includes(item.key)
   )?.key || 'dashboard';
@@ -84,7 +83,6 @@ const CustomerDashboard = () => {
           </div>
         </header>
 
-        {/* Outlet for nested routes */}
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
           <Outlet />
         </main>

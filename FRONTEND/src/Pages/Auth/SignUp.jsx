@@ -51,15 +51,13 @@ export default function SignUp() {
           phone: '',
           role: 'customer',
           password: '',
-          password2: '', // Reset password2 as well
+          password2: '', 
         });
 
-        // Redirect to login page after short delay
         setTimeout(() => {
-          navigate('/login'); // Adjust if your login route differs
+          navigate('/login');
         }, 1500);
       } else {
-        // Parse and display backend validation errors clearly
         const errorMessages = Object.entries(data)
           .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
           .join(' | ');

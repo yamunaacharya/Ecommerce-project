@@ -80,10 +80,10 @@ const AdminDashboard = () => {
             className={`flex items-center p-4 cursor-pointer ${
               activeMenu === 'products' ? 'bg-indigo-800' : 'hover:bg-gray-800'
             }`}
-            onClick={() => handleMenuClick('products', '/admin/products')}
+            onClick={() => handleMenuClick('products', '/products')}
             role="button"
             tabIndex={0}
-            onKeyPress={(e) => e.key === 'Enter' && handleMenuClick('products', '/admin/products')}
+            onKeyPress={(e) => e.key === 'Enter' && handleMenuClick('products', '/products')}
           >
             <FaBox className="text-lg" />
             <span className="ml-4">Products</span>
@@ -131,7 +131,6 @@ const AdminDashboard = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-end p-4 relative">
-            {/* User Icon and Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((open) => !open)}
@@ -147,12 +146,6 @@ const AdminDashboard = () => {
 
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 border border-gray-200">
-                  <button
-                    onClick={handleProfile}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    My Profile
-                  </button>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"

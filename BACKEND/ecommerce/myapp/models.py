@@ -31,7 +31,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     stock_quantity = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
-    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    image = models.ImageField(upload_to='Products/', blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -109,7 +109,7 @@ class CartItem(models.Model):
         variant_info = f" ({self.variant.variant_value})" if self.variant else ''
         return f"{self.user.username}'s Cart: {self.product.name}{variant_info} x {self.quantity}"
 
-# 9. Payment (Khalti only)
+# 9. Payment 
 class Payment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),

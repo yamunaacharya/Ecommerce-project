@@ -6,14 +6,19 @@ import Footer from './Components/Footer';
 import AdminDashboard from './Admin/AdminDashboard';
 import SignUp from './Pages/Auth/SignUp';
 import Login from './Pages/Auth/Login';
-import ProductList from './Admin/Product';
-import CustomerDashboard from './Customer/Customerdash';  
+import Product from './Admin/Product';
+import CustomerDashboard from './Customer/Customerdash';
+import ProductList from './Products/ProductList';
+import Productdetail from './Products/Productdetails';
+import { CartProvider } from './Products/cart';
+import CartPage from './Products/CartPage';
+import CheckoutPage from './Products/CheckoutPage';
+import Customers from './Admin/CustomerManage';
 
 const Layout = ({ children }) => {
   const location = useLocation();
 
-  const noNavFooterPaths = ['/admindashboard', '/customerdashboard'];
-  
+  const noNavFooterPaths = ['/admindashboard', '/customerdashboard', '/products', '/admin/customers'];
 
   const hideNavFooter = noNavFooterPaths.includes(location.pathname);
 
@@ -28,20 +33,27 @@ const Layout = ({ children }) => {
 
 const MainLayout = () => {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/customerdashboard" element={<CustomerDashboard />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/admindashboard" element={<AdminDashboard />} />
+            <Route path="/customerdashboard" element={<CustomerDashboard />} />
+            <Route path="/products" element={<Product />} />
+            <Route path="/productlist" element={<ProductList />} />
+            <Route path="/product/:id" element={<Productdetail />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/admin/customers" element={<Customers />} />
+            {/* <Route path="*" element={<NotFound />} /> */}
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </CartProvider>
   );
 };
 

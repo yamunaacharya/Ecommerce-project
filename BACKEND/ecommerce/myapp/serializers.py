@@ -48,13 +48,21 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         model = ProductVariant
         fields = ['id', 'product', 'variant_name', 'variant_value', 'stock_quantity', 'image']
 
-# 4. Product Serializer
+# 4. Product Serializer 
 class ProductSerializer(serializers.ModelSerializer):
     variants = ProductVariantSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'stock_quantity', 'category', 'image', 'created_at', 'updated_at', 'variants']
+        fields = ['id', 'name', 'description', 'price', 'stock_quantity', 'category', 'image', 'image_url', 
+                  'created_at', 'updated_at', 'variants']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 # 5. Address Serializer
 class AddressSerializer(serializers.ModelSerializer):
@@ -83,12 +91,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
 # 8. Cart Item Serializer
 class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
-    variant = ProductVariantSerializer(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True)
+    product_detail = ProductSerializer(source='product', read_only=True)
+    variant = serializers.PrimaryKeyRelatedField(queryset=ProductVariant.objects.all(), 
+                                                 required=False, allow_null=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = CartItem
-        fields = ['id', 'user', 'product', 'variant', 'quantity', 'added_at']
+        fields = ['id', 'user', 'product', 'product_detail', 'variant', 'quantity', 'added_at']
 
 # 9. Payment Serializer
 class PaymentSerializer(serializers.ModelSerializer):
