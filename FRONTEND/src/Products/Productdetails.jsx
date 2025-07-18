@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from './cart';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -8,6 +9,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [cartMessage, setCartMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const { fetchCart } = useCart();
 
   useEffect(() => {
     axios.get(`http://localhost:8000/api/products/${id}/`)
@@ -27,13 +29,21 @@ const ProductDetail = () => {
         },
       };
       await axios.post('http://localhost:8000/api/cart-items/', { product: id, quantity }, config);
-      setCartMessage('Product added to cart!');
+      alert(`Added ${product.name} to cart successfully!`);
+      fetchCart(); // <-- update cart count
     } catch (err) {
-      setCartMessage('Failed to add to cart.');
+      alert('Failed to add to cart.');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (cartMessage) {
+      const timer = setTimeout(() => setCartMessage(''), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [cartMessage]);
 
   if (!product) return <div className="mt-10 text-center">Loading...</div>;
 
@@ -61,7 +71,7 @@ const ProductDetail = () => {
         <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
         <p className="mb-4 text-gray-700">{product.description}</p>
         <div className="flex items-center mb-4">
-          <span className="text-2xl font-bold mr-2">${product.price}</span>
+          <span className="text-2xl font-bold mr-2">Rs.{product.price}</span>
         </div>
         <div className="flex items-center gap-2 mb-4">
           <button

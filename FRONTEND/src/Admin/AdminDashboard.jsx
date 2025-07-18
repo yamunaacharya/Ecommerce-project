@@ -18,6 +18,12 @@ const AdminDashboard = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [metrics, setMetrics] = useState({
+    total_sales: 0,
+    total_orders: 0,
+    active_users: 0,
+    revenue: 0,
+  });
 
   const navigate = useNavigate();
 
@@ -30,6 +36,20 @@ const AdminDashboard = () => {
     }
 
     setUserInfo(user);
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch('http://localhost:8000/api/admin/metrics/', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMetrics(data);
+      }
+    };
+    fetchMetrics();
   }, [navigate]);
 
   useEffect(() => {
@@ -173,7 +193,7 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Sales</p>
-                  <h3 className="text-2xl font-bold text-gray-800">$24,780</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Rs.{metrics.total_sales}</h3>
                 </div>
                 <div className="bg-indigo-100 p-3 rounded-full">
                   <FaDollarSign className="text-indigo-600 text-xl" />
@@ -184,7 +204,7 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Orders</p>
-                  <h3 className="text-2xl font-bold text-gray-800">1,482</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">{metrics.total_orders}</h3>
                 </div>
                 <div className="bg-orange-100 p-3 rounded-full">
                   <FaShoppingBag className="text-orange-600 text-xl" />
@@ -195,7 +215,7 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Active Users</p>
-                  <h3 className="text-2xl font-bold text-gray-800">3,927</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">{metrics.active_users}</h3>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
                   <FaUsers className="text-blue-600 text-xl" />
@@ -206,7 +226,7 @@ const AdminDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Revenue</p>
-                  <h3 className="text-2xl font-bold text-gray-800">$18,430</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Rs.{metrics.revenue}</h3>
                 </div>
                 <div className="bg-green-100 p-3 rounded-full">
                   <FaChartLine className="text-green-600 text-xl" />

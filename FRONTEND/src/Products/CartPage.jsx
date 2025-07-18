@@ -33,7 +33,17 @@ const CartPage = () => {
       );
       fetchCart();
     } catch (error) {
-      alert('Failed to update quantity');
+      // Check for stock error from backend
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.detail &&
+        error.response.data.detail.toLowerCase().includes('stock')
+      ) {
+        alert('Failed to increase quantity because of low stock');
+      } else {
+        alert('Failed to update quantity');
+      }
     }
   };
 
@@ -83,13 +93,15 @@ const CartPage = () => {
                       <button
                         className="px-2 py-1 border rounded-r"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        disabled={item.quantity >= (product.stock_quantity || 0)}
+                        title={item.quantity >= (product.stock_quantity || 0) ? "No more stock available" : ""}
                       >+</button>
                       <span className="ml-4 text-gray-600">
-                        × ${product.price}
+                        × Rs.{product.price}
                       </span>
                     </div>
                   </div>
-                  <div className="font-semibold mr-4">${(product.price * item.quantity).toFixed(2)}</div>
+                  <div className="font-semibold mr-4">Rs.{(product.price * item.quantity).toFixed(2)}</div>
                   <button
                     className="text-red-600 hover:text-red-800"
                     onClick={() => removeItem(item.id)}
@@ -101,7 +113,7 @@ const CartPage = () => {
               );
             })}
             <div className="mt-6 text-right">
-              <span className="text-xl font-bold">Total: ${mergedCartItems.reduce((sum, item) => {
+              <span className="text-xl font-bold">Total: Rs.{mergedCartItems.reduce((sum, item) => {
                 const product = item.product_detail || item.product;
                 return sum + (product?.price || 0) * item.quantity;
               }, 0).toFixed(2)}</span>
@@ -115,7 +127,7 @@ const CartPage = () => {
         <h2 className="text-xl font-bold mb-4">Order Summary</h2>
         <div className="mb-2 flex justify-between">
           <span>Subtotal ({mergedCartItems.length} items)</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>Rs.{subtotal.toFixed(2)}</span>
         </div>
         <div className="mb-2 flex justify-between">
           <span>Shipping</span>
@@ -123,12 +135,12 @@ const CartPage = () => {
         </div>
         <div className="mb-2 flex justify-between text-green-600">
           <span>Discount</span>
-          <span>-${discount.toFixed(2)}</span>
+          <span>-Rs.{discount.toFixed(2)}</span>
         </div>
         <hr className="my-2" />
         <div className="mb-4 flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span>${(subtotal - discount + shipping).toFixed(2)}</span>
+          <span>Rs.{(subtotal - discount + shipping).toFixed(2)}</span>
         </div>
         <button
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"

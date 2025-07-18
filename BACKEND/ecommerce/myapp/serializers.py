@@ -82,12 +82,22 @@ class OrderItemSerializer(serializers.ModelSerializer):
 # 7. Order Serializer
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
-    address = AddressSerializer(read_only=True)
     user = UserSerializer(read_only=True)
+    payment_method = serializers.ChoiceField(choices=Order.PAYMENT_CHOICES, required=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'address', 'status', 'total_amount', 'order_date', 'items']
+        fields = [
+            'id',
+            'user',
+            'customer_name',         # <-- add this
+            'shipping_address',      # <-- add this
+            'status',
+            'total_amount',
+            'order_date',
+            'items',
+            'payment_method',
+        ]
 
 # 8. Cart Item Serializer
 class CartItemSerializer(serializers.ModelSerializer):

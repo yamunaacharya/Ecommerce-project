@@ -51,10 +51,10 @@ const CustomerDashboard = () => {
               className={`flex items-center p-4 cursor-pointer select-none ${
                 activeMenu === menu.key ? 'bg-indigo-800' : 'hover:bg-gray-800'
               }`}
-              onClick={() => navigate(`/${menu.key}`)}
+              onClick={() => navigate(menu.key === 'orders' ? '/my-orders' : `/${menu.key}`)}
               role="button"
               tabIndex={0}
-              onKeyPress={e => e.key === 'Enter' && navigate(`/${menu.key}`)}
+              onKeyPress={e => e.key === 'Enter' && navigate(menu.key === 'orders' ? '/my-orders' : `/${menu.key}`)}
               aria-current={activeMenu === menu.key ? 'page' : undefined}
             >
               <div className="text-lg">{menu.icon}</div>

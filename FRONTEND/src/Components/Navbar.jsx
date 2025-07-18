@@ -87,9 +87,8 @@ const Navbar = () => {
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/home" className="text-gray-800 hover:text-black font-medium">Home</Link>
-            <Link to="/productlist" className="text-gray-800 hover:text-black font-medium">Jeans</Link>
-            <Link to="/category/dress" className="text-gray-800 hover:text-black font-medium">Dress</Link>
-            <Link to="/category/t-shirts" className="text-gray-800 hover:text-black font-medium">T-shirts</Link>
+            <Link to="/productlist" className="text-gray-800 hover:text-black font-medium">New Arrival</Link>
+            <Link to="/productlist" className="text-gray-800 hover:text-black font-medium">sale</Link>
           </nav>
 
           <div className="absolute left-1/2 transform -translate-x-1/2">

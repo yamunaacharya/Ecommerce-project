@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from '../../Components/Input';
 
 export default function Login() {
+  // Clear guest cart on login page load
+  useEffect(() => {
+    localStorage.removeItem('guest_cart');
+  }, []);
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -37,8 +42,33 @@ export default function Login() {
       if (response.ok) {
         localStorage.setItem('access_token', data.access);
         localStorage.setItem('refresh_token', data.refresh);
-
         localStorage.setItem('user', JSON.stringify(data.user));
+
+        // Transfer guest cart to user cart
+        const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+        if (guestCart.length > 0) {
+          const token = data.access;
+          const addAllToCart = async () => {
+            for (const item of guestCart) {
+              try {
+                await fetch('http://localhost:8000/api/cart-items/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    product: item.product.id,
+                    quantity: item.quantity,
+                  }),
+                });
+              } catch (e) {
+              }
+            }
+            localStorage.removeItem('guest_cart');
+          };
+          await addAllToCart();
+        }
 
         setMessage('Login successful! Redirecting...');
 

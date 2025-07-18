@@ -1,26 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const categories = [
     {
       id: 1,
-      name: 'Pants',
-      image: 'https://via.placeholder.com/300x300?text=Pants',
+      name: 'Jeans',
+      image: 'https://i.pinimg.com/736x/21/23/91/2123912e54c5e862ee9dc0022e9f5fef.jpg',
     },
     {
       id: 2,
       name: 'Dress',
-      image: 'https://via.placeholder.com/300x300?text=Dress',
+      image: 'https://i.pinimg.com/1200x/16/b1/57/16b157c941b73e210da859267c4685d8.jpg',
     },
     {
       id: 3,
       name: 'T-Shirts',
-      image: 'https://via.placeholder.com/300x300?text=T-Shirts',
+      image: 'https://i.pinimg.com/1200x/0e/eb/6c/0eeb6c6ec0231d37ecb3cf8a590d9c07.jpg',
     },
     {
       id: 4,
-      name: 'Jackets',
-      image: 'https://via.placeholder.com/300x300?text=Jackets',
+      name: 'Jacket',
+      image: 'https://i.pinimg.com/1200x/5f/84/c0/5f84c0f92f050b97e2f60e7301d07949.jpg',
     },
   ];
 
@@ -42,7 +43,7 @@ const Home = () => {
               Discover our latest designs crafted with sustainable materials and timeless aesthetics.
             </p>
             <button className="bg-black text-white px-8 py-3 text-lg font-medium hover:bg-gray-900 transition-colors">
-              Shop Now
+            <Link to="/productlist">Shop Now</Link>
             </button>
           </div>
         </div>
@@ -53,7 +54,11 @@ const Home = () => {
           <h2 className="text-3xl font-light text-center mb-8">Shop by Category</h2>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((category) => (
-              <div key={category.id} className="text-center group">
+              <Link
+                to={`/productlist/${category.name}`}
+                key={category.id}
+                className="text-center group block"
+              >
                 <div className="overflow-hidden rounded-md shadow-md aspect-square bg-gray-100">
                   <img
                     src={category.image}
@@ -62,7 +67,7 @@ const Home = () => {
                   />
                 </div>
                 <h3 className="mt-3 text-lg font-medium text-gray-900">{category.name}</h3>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

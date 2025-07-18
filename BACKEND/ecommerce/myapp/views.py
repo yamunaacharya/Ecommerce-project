@@ -5,6 +5,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import serializers
+from rest_framework.decorators import action
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from .models import Order, User, models
 
 from .models import User, Category, Product, ProductVariant, Address, Order, OrderItem, CartItem, Payment
 from .serializers import (
@@ -94,6 +99,25 @@ class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return Order.objects.all().order_by('-order_date')
+        return Order.objects.filter(user=user).order_by('-order_date')
+
+    def perform_create(self, serializer):
+        order = serializer.save(user=self.request.user)
+        from .models import CartItem, OrderItem
+        cart_items = CartItem.objects.filter(user=self.request.user)
+        for cart_item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                quantity=cart_item.quantity,
+                price=cart_item.product.price,
+            )
+        cart_items.delete()
+
 
 class OrderItemViewSet(viewsets.ModelViewSet):
     queryset = OrderItem.objects.all()
@@ -112,7 +136,7 @@ class CartItemViewSet(viewsets.ModelViewSet):
         product = serializer.validated_data['product']
         quantity = serializer.validated_data['quantity']
         if product.stock_quantity < quantity:
-            return Response({'detail': 'Not enough stock available.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({ 'Not enough stock available.'}, status=status.HTTP_400_BAD_REQUEST)
         cart_item = serializer.save(user=request.user)
         product.stock_quantity -= quantity
         product.save()
@@ -138,8 +162,29 @@ class CartItemViewSet(viewsets.ModelViewSet):
         product.save()
         return response
 
+    @action(detail=False, methods=['delete'], url_path='clear')
+    def clear_cart(self, request):
+        user = request.user
+        CartItem.objects.filter(user=user).delete()
+        return Response({'detail': 'Cart cleared.'}, status=status.HTTP_204_NO_CONTENT)
+
 
 class PaymentViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def admin_metrics(request):
+    total_sales = Order.objects.aggregate(total=models.Sum('total_amount'))['total'] or 0
+    total_orders = Order.objects.count()
+    active_users = User.objects.filter(order__isnull=False).distinct().count()
+    revenue = Order.objects.filter(status='delivered').aggregate(total=models.Sum('total_amount'))['total'] or 0
+    return Response({
+        'total_sales': total_sales,
+        'total_orders': total_orders,
+        'active_users': active_users,
+        'revenue': revenue,
+    })

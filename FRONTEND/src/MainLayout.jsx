@@ -14,11 +14,14 @@ import { CartProvider } from './Products/cart';
 import CartPage from './Products/CartPage';
 import CheckoutPage from './Products/CheckoutPage';
 import Customers from './Admin/CustomerManage';
+import OrderConfirmation from './Products/OrderConfirmation';
+import UserOrders from './Customer/UserOrders';
+import AdminOrders from './Admin/AdminOrders';
 
 const Layout = ({ children }) => {
   const location = useLocation();
 
-  const noNavFooterPaths = ['/admindashboard', '/customerdashboard', '/products', '/admin/customers'];
+  const noNavFooterPaths = ['/admindashboard', '/customerdashboard', '/products', '/admin/customers', '/admin/orders'];
 
   const hideNavFooter = noNavFooterPaths.includes(location.pathname);
 
@@ -43,12 +46,16 @@ const MainLayout = () => {
             <Route path="/customerdashboard" element={<CustomerDashboard />} />
             <Route path="/products" element={<Product />} />
             <Route path="/productlist" element={<ProductList />} />
+            <Route path="/productlist/:category" element={<ProductList />} />
             <Route path="/product/:id" element={<Productdetail />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/cart" element={<CartPage />} />
+            <Route path="/cart" element={<CartPage />} />            
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
+            <Route path="/my-orders" element={<UserOrders />} />
             <Route path="/admin/customers" element={<Customers />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
             {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
         </Layout>

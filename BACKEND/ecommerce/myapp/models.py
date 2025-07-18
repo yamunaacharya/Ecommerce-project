@@ -72,11 +72,17 @@ class Order(models.Model):
         ('canceled', 'Canceled'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    customer_name = models.CharField(max_length=200, default="Unknown")
+    shipping_address = models.CharField(max_length=300, default="Unknown")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(0)])
     order_date = models.DateTimeField(default=timezone.now)
+    PAYMENT_CHOICES = [
+        ('khalti', 'Khalti'),
+        ('cod', 'Cash on Delivery'),
+    ]
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES, default='khalti')
 
     def __str__(self):
         return f"Order #{self.id} by {self.user.username}"
