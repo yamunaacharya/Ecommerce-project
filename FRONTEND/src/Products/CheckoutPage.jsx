@@ -42,7 +42,6 @@ export default function CheckoutPage() {
     setMessage('Order placed successfully!');
   };
 
-  // Calculate total_amount from cartItems
   const totalAmount = cartItems.reduce((sum, item) => {
     const price = item.product?.price || item.product_detail?.price || 0;
     return sum + price * item.quantity;
@@ -67,10 +66,9 @@ export default function CheckoutPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        const newOrderId = data.id; // or whatever the backend returns
+        const newOrderId = data.id; 
         await clearCart();
         showOrderSuccess();
-        // Example in React
         navigate('/order-confirmation', { state: { orderId: newOrderId } });
       } else {
         // Handle error
@@ -84,7 +82,6 @@ export default function CheckoutPage() {
     <div className="max-w-2xl mx-auto mt-16 mb-16 p-8 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-6">Shipping Address</h2>
       <form onSubmit={handleSubmit}>
-        {/* Country/Region as text input */}
         <input
           name="country"
           value={form.country}
@@ -93,7 +90,7 @@ export default function CheckoutPage() {
           required
           className="mb-4 w-full p-2 border rounded"
         />
-        {/* First and Last Name */}
+
         <div className="flex gap-4 mb-4">
           <input
             name="firstName"
@@ -112,7 +109,7 @@ export default function CheckoutPage() {
             className="w-1/2 p-2 border rounded"
           />
         </div>
-        {/* Address */}
+        
         <input
           name="address"
           value={form.address}
@@ -121,7 +118,7 @@ export default function CheckoutPage() {
           required
           className="mb-4 w-full p-2 border rounded"
         />
-        {/* City, State, ZIP */}
+       
         <div className="flex gap-4 mb-4">
           <input
             name="city"
@@ -148,7 +145,7 @@ export default function CheckoutPage() {
             className="w-1/3 p-2 border rounded"
           />
         </div>
-        {/* Phone */}
+        
         <input
           name="phone"
           value={form.phone}
@@ -157,7 +154,7 @@ export default function CheckoutPage() {
           required
           className="mb-6 w-full p-2 border rounded"
         />
-        {/* Payment Section */}
+       
         <h2 className="text-xl font-bold mb-4 mt-8">Payment</h2>
         <div className="mb-6">
           <label className="flex items-center mb-2">
@@ -183,7 +180,7 @@ export default function CheckoutPage() {
             Khalti
           </label>
         </div>
-        {/* Show total amount */}
+      
         <div className="mb-4 text-right font-semibold">Total: Rs. {totalAmount}</div>
         {message && <div className="mb-4 text-green-600 font-semibold text-center">{message}</div>}
         <button

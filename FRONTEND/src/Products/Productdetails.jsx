@@ -30,7 +30,7 @@ const ProductDetail = () => {
       };
       await axios.post('http://localhost:8000/api/cart-items/', { product: id, quantity }, config);
       alert(`Added ${product.name} to cart successfully!`);
-      fetchCart(); // <-- update cart count
+      fetchCart(); 
     } catch (err) {
       alert('Failed to add to cart.');
     } finally {

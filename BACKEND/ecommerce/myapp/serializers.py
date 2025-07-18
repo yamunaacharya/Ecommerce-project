@@ -90,8 +90,8 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'user',
-            'customer_name',         # <-- add this
-            'shipping_address',      # <-- add this
+            'customer_name',         
+            'shipping_address',     
             'status',
             'total_amount',
             'order_date',
