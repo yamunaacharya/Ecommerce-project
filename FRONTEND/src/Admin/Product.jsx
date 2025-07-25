@@ -167,7 +167,7 @@ const Product = () => {
               {products.map((p) => (
                 <tr key={p.id}>
                   <td className="border border-gray-300 px-4 py-2">{p.name}</td>
-                  <td className="border border-gray-300 px-4 py-2">${p.price}</td>
+                  <td className="border border-gray-300 px-4 py-2">Rs.{p.price}</td>
                   <td className="border border-gray-300 px-4 py-2">{p.stock_quantity}</td>
                   <td className="border border-gray-300 px-4 py-2">{p.category?.name || 'N/A'}</td>
                   <td className="border border-gray-300 px-4 py-2 space-x-2">
@@ -225,7 +225,7 @@ const Product = () => {
               </div>
               <div className="mb-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-medium mb-1">Price ($)</label>
+                  <label className="block font-medium mb-1">Price (Rs)</label>
                   <input
                     type="number"
                     name="price"
