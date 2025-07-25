@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Input from '../../Components/Input';
 
 export default function Login() {
-  // Clear guest cart on login page load
   useEffect(() => {
     localStorage.removeItem('guest_cart');
   }, []);
@@ -11,11 +10,11 @@ export default function Login() {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
+    role: 'customer', 
   });
 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -34,7 +33,11 @@ export default function Login() {
       const response = await fetch('http://localhost:8000/api/login/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+          role: formData.role, 
+        }),
       });
 
       const data = await response.json();
@@ -44,7 +47,6 @@ export default function Login() {
         localStorage.setItem('refresh_token', data.refresh);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Transfer guest cart to user cart
         const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
         if (guestCart.length > 0) {
           const token = data.access;
@@ -63,6 +65,7 @@ export default function Login() {
                   }),
                 });
               } catch (e) {
+                
               }
             }
             localStorage.removeItem('guest_cart');
@@ -118,6 +121,24 @@ export default function Login() {
           value={formData.password}
           handleChange={handleChange}
         />
+
+        <div className="mb-4">
+          <label htmlFor="role" className="block text-gray-700 mb-1 font-medium">
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"
+            required
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
         <button
           type="submit"
           disabled={loading}

@@ -81,7 +81,7 @@ const AdminDashboard = () => {
       {/* Sidebar */}
       <div className="bg-gray-900 text-white w-64">
         <div className="p-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">EcomAdmin</h1>
+          <h1 className="text-xl font-bold">Admin Dashboard</h1>
         </div>
         <nav className="mt-6">
           <div
@@ -132,22 +132,9 @@ const AdminDashboard = () => {
             <FaUsers className="text-lg" />
             <span className="ml-4">Customers</span>
           </div>
-          <div
-            className={`flex items-center p-4 cursor-pointer ${
-              activeMenu === 'settings' ? 'bg-indigo-800' : 'hover:bg-gray-800'
-            }`}
-            onClick={() => handleMenuClick('settings', '/admin/settings')}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => e.key === 'Enter' && handleMenuClick('settings', '/admin/settings')}
-          >
-            <FaCog className="text-lg" />
-            <span className="ml-4">Settings</span>
-          </div>
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow-sm z-10">
           <div className="flex items-center justify-end p-4 relative">
@@ -178,7 +165,6 @@ const AdminDashboard = () => {
           </div>
         </header>
 
-        {/* Dashboard Overview */}
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-800">Dashboard Overview</h1>
