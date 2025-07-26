@@ -74,9 +74,18 @@ export default function CheckoutPage() {
         // Handle error
       }
     } else if (paymentMethod === 'khalti') {
-      navigate('/khalti');
+      navigate('/khalti', { 
+        state: { 
+          orderDetails: {
+            customer_name: form.firstName + ' ' + form.lastName,
+            shipping_address: `${form.address}, ${form.city}, ${form.state}, ${form.zip}, ${form.country}`,
+            total_amount: totalAmount,
+          }
+        } 
+      });
     }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto mt-16 mb-16 p-8 bg-white rounded shadow">

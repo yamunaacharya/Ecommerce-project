@@ -17,6 +17,7 @@ import Customers from './Admin/CustomerManage';
 import OrderConfirmation from './Products/OrderConfirmation';
 import UserOrders from './Customer/UserOrders';
 import AdminOrders from './Admin/AdminOrders';
+import KhaltiPayment from './Products/KhaltiPayment';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -52,6 +53,7 @@ const MainLayout = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/cart" element={<CartPage />} />            
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/khalti" element={<KhaltiPayment />} />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/my-orders" element={<UserOrders />} />
             <Route path="/admin/customers" element={<Customers />} />

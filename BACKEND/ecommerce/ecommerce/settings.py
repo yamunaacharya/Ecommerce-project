@@ -146,3 +146,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+KHALTI_PUBLIC_KEY = "cebe63e430ac4756951c256197fe2ad0"
+KHALTI_SECRET_KEY = "de908efba35846e89545a8459c11431d"

@@ -1,3 +1,6 @@
+import json 
+import requests
+from django.conf import settings
 from rest_framework import viewsets, generics, permissions, filters
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -188,3 +191,98 @@ def admin_metrics(request):
         'active_users': active_users,
         'revenue': revenue,
     })
+
+@api_view(['POST'])
+def initkhalti(request):
+    try:
+        url = "https://a.khalti.com/api/v2/epayment/initiate/"
+        payload = {
+            "return_url": request.data.get("return_url"),
+            "website_url": request.data.get("website_url"),
+            "amount": request.data.get("amount"),
+            "purchase_order_id": request.data.get("purchase_order_id"),
+            "purchase_order_name": "Order Checkout",
+            "customer_info": {
+                "name": request.data.get("name", "Guest"),
+                "email": request.data.get("email", "test@khalti.com"),
+                "phone": request.data.get("phone", "9800000001"),
+            },
+        }
+
+        webhook_url = request.build_absolute_uri('/api/khalti-webhook/')
+        payload["webhook_url"] = webhook_url
+
+        print("📦 Payload to Khalti:", payload)
+
+        headers = {
+            'Authorization': f'key {settings.KHALTI_SECRET_KEY}',
+            'Content-Type': 'application/json',
+        }
+
+        response = requests.post(url, headers=headers, json=payload)
+        data = response.json()
+
+        print("📩 Response from Khalti:", data)
+
+        if 'payment_url' in data:
+            return Response({"payment_url": data["payment_url"]})
+        else:
+            return Response({"error": data}, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        print("🔥 ERROR:", str(e))
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def verify_khalti(request):
+    url = "https://a.khalti.com/api/v2/epayment/lookup/"
+    pidx = request.GET.get("pidx")
+    headers = {
+        'Authorization': f'key {settings.KHALTI_SECRET_KEY}',
+        'Content-Type': 'application/json',
+    }
+    payload = json.dumps({"pidx": pidx})
+    res = requests.post(url, headers=headers, data=payload)
+    data = res.json()
+    return Response(data)
+
+@api_view(['POST'])
+def khalti_webhook(request):
+    """
+    Webhook endpoint for Khalti payment callbacks
+    This is called by Khalti when payment status changes
+    """
+    try:
+        pidx = request.data.get('pidx')
+        status = request.data.get('status')
+        amount = request.data.get('amount')
+        
+        print(f"🔔 Khalti Webhook received - Pidx: {pidx}, Status: {status}, Amount: {amount}")
+        
+        if not pidx:
+            return Response({"error": "Missing pidx"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            order = Order.objects.get(khalti_transaction_id=pidx)
+        except Order.DoesNotExist:
+            purchase_order_id = f"order_{pidx}"
+            try:
+                order = Order.objects.get(id=pidx.split('_')[1] if '_' in pidx else pidx)
+            except (Order.DoesNotExist, ValueError, IndexError):
+                return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if status == 'Completed':
+            order.status = 'pending'
+            order.khalti_token = request.data.get('token', '')
+            order.save()
+            print(f"✅ Order {order.id} payment confirmed")
+        elif status == 'Failed':
+            order.status = 'canceled'
+            order.save()
+            print(f"❌ Order {order.id} payment failed")
+        
+        return Response({"status": "success"})
+        
+    except Exception as e:
+        print(f"🔥 Webhook Error: {str(e)}")
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

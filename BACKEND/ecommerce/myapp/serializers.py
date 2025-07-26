@@ -91,12 +91,14 @@ class OrderSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'customer_name',         
-            'shipping_address',     
+            'shipping_address',      
             'status',
             'total_amount',
             'order_date',
             'items',
             'payment_method',
+            'khalti_transaction_id',
+            'khalti_token',
         ]
 
 # 8. Cart Item Serializer
